@@ -1,0 +1,31 @@
+version: 0.2
+
+env:
+  variables:
+     DB_PORT: 3306
+     AWS_REGION: us-east-1
+  parameter-store:
+    DATABASE_NAME: "gameday-bluegreen_database_name"
+    DATABASE_USER: "gameday-bluegreen_database_user"
+    DATABASE_PASSWORD: "gameday-bluegreen_database_password"              
+
+phases:
+  pre_build:
+    commands:
+      - echo "Before running tests"
+      - python --version
+      - pip install --user --upgrade virtualenv
+      - virtualenv -p python3 venv 
+      - . venv/bin/activate
+      - pip install -r requirements.txt
+
+  build:
+    commands:
+      - echo "Running all unit tests"
+      - venv/bin/python manage.py test
+  post_build:
+    commands:
+      - echo Build completed on `date`
+artifacts:
+  files:
+    - '**/*'
